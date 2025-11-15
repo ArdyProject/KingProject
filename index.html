@@ -3,100 +3,1163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sampai Berjumpa Kembali</title>
-    <!-- Memuat Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Memuat font Inter -->
+    <title>Me And You</title>
+    <!-- Gunakan font Inter untuk tampilan yang bersih dan modern -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Menggunakan font Inter sebagai default, dan Lora untuk kutipan */
-        body {
-            font-family: 'Inter', sans-serif;
+        /* CSS Variables untuk Tema Sinematik (Dark Mode) */
+        :root {
+            --color-bg: #121212;
+            --color-bg-secondary: #1e1e1e;
+            --color-border: #333333;
+            --color-text-primary: #f0f0f0;
+            --color-text-secondary: #a0a0a0;
+            --color-accent: #007aff; /* Biru cerah sebagai aksen */
+            --color-accent-hover: #0056b3;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --border-radius: 12px;
         }
-        .font-lora {
-            font-family: 'Lora', serif;
+
+        /* Reset dan Pengaturan Dasar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: hidden; /* Mencegah scroll horizontal */
+        }
+
+        /* Kontainer Utama */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: white;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Bagian Dashboard Statistik */
+        #dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-main {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .stat-card .stat-sub {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Diagram Bar Sederhana untuk Statistik File */
+        .file-stats-bars {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .bar-container {
+            width: 100%;
+            background-color: var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 10px;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0; /* Diatur oleh JS */
+            background-color: var(--color-accent);
+            border-radius: 4px;
+            transition: width 0.5s ease-out;
+        }
+
+        .file-stats-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        /* Warna bar berbeda */
+        #photos-bar { background-color: #007aff; }
+        #videos-bar { background-color: #ff3b30; }
+        #music-bar { background-color: #34c759; }
+        #files-bar { background-color: #ff9500; }
+
+        /* Progress Bar untuk Penyimpanan Drive */
+        #storage-bar-inner {
+            background: linear-gradient(90deg, var(--color-accent) 0%, #00c6ff 100%);
+        }
+
+        /* Bagian Upload */
+        #uploader {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        #upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        /* Custom File Input Button */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--color-bg-secondary);
+            border: 2px dashed var(--color-border);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            color: var(--color-text-secondary);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .file-input-wrapper:hover {
+            background-color: var(--color-border);
+            border-color: var(--color-accent);
+        }
+
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        #file-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        #upload-button {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #upload-button:hover {
+            background-color: var(--color-accent-hover);
+            transform: scale(1.02);
+        }
+
+        #upload-button:disabled {
+            background-color: var(--color-text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #upload-status {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            min-height: 1.5em; /* Sisakan ruang untuk teks status */
+        }
+        
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none; /* Sembunyikan by default */
+            margin: 0.5rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Navigasi Galeri */
+        #gallery-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap; /* Agar responsif di mobile */
+        }
+
+        .nav-button {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 20px; /* Bentuk pil */
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        .nav-button.active {
+            background-color: var(--color-accent);
+            color: white;
+            border-color: var(--color-accent);
+        }
+
+        /* Kontainer Galeri */
+        #gallery-container {
+            width: 100%;
+        }
+
+        .gallery-grid {
+            display: grid;
+            /* Grid responsif: 2 kolom di mobile, 4 di desktop */
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        @media (min-width: 600px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-grid {
+                /* Sesuai permintaan: 4 kolom di layar besar */
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1 / 1; /* Membuat item kotak */
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            z-index: 10;
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Memastikan gambar/video memenuhi kotak */
+        }
+        
+        /* Ikon untuk file */
+        .file-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--color-text-secondary);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .file-icon svg {
+            width: 40%;
+            height: 40%;
+            max-width: 60px;
+            max-height: 60px;
+            margin-bottom: 0.5rem;
+            fill: currentColor;
+        }
+        
+        .file-icon span {
+            font-size: 0.8rem;
+            word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Overlay tipe file */
+        .file-type-overlay {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 8px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border-radius: 6px;
+            backdrop-filter: blur(5px);
+            z-index: 5;
+        }
+
+        /* Modal Preview */
+        #preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px); /* Efek cinematic */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #preview-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: var(--color-bg-secondary);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h4 {
+            font-size: 1.1rem;
+            color: var(--color-text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: calc(90vw - 150px);
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--color-text-primary);
+        }
+        
+        .modal-body {
+            padding: 1rem;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .modal-body img,
+        .modal-body video {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+        
+        .modal-body audio {
+            width: 100%;
+            min-width: 300px;
+        }
+
+        .file-preview-generic {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-secondary);
+        }
+
+        .file-preview-generic svg {
+            width: 80px;
+            height: 80px;
+            fill: currentColor;
+            margin-bottom: 1rem;
+        }
+        
+        .file-preview-generic a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .file-preview-generic a:hover {
+            background-color: var(--color-accent-hover);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            margin-top: 2rem;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+                gap: 1.5rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            #dashboard {
+                grid-template-columns: 1fr; /* 1 kolom di mobile */
+            }
+
+            #uploader {
+                padding: 1.5rem;
+            }
+
+            .file-input-wrapper {
+                padding: 0.75rem 1rem;
+            }
+
+            #gallery-nav {
+                gap: 0.5rem;
+            }
+
+            .nav-button {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .gallery-grid {
+                /* 2 kolom di mobile, sesuai galeri HP */
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            
+            .modal-content {
+                max-width: 95vw;
+                max-height: 95vh;
+            }
+            
+            .modal-header h4 {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 antialiased">
+<body>
 
-    <!-- Kontainer Utama -->
-    <div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        
-        <main class="bg-white w-full max-w-3xl mx-auto p-6 sm:p-10 rounded-2xl shadow-xl">
-            
-            <!-- Header Utama -->
-            <header class="text-center mb-8 border-b border-gray-200 pb-8">
-                <h1 class="font-lora text-3xl sm:text-4xl font-bold text-indigo-700">
-                    Bukan Selamat Tinggal,
-                </h1>
-                <p class="text-2xl sm:text-3xl font-light text-gray-600 mt-2">
-                    ...tapi Sampai Berjumpa Kembali.
-                </p>
-            </header>
+    <!-- Kontainer Utama Aplikasi -->
+    <div class="container">
 
-            <!-- Konten Utama -->
-            <section>
+        <header>
+            <h1>Me And You</h1>
+            <p>Didalam sebuah foto ada kenangan</p>
+        </header>
 
-                <!-- Pesan Perpisahan -->
-                <div class="mb-8">
-                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                        Halo semuanya,
-                    </p>
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                        Dengan perasaan yang campur aduk, aku menulis ini untuk menyampaikan bahwa perjalananku di kampus kita tercinta harus terhenti sampai di sini. Ini bukan keputusan yang mudah, dan bukan sesuatu yang kuambil dengan enteng. Ada banyak pertimbangan yang akhirnya membawaku ke titik ini.
-                    </p>
-                    <p class="text-gray-700 leading-relaxed">
-                        Aku harus mengambil jalur yang berbeda untuk saat ini. Meski berat rasanya meninggalkan semua kenangan dan rutinitas yang sudah kita bangun bersama, aku percaya ini adalah langkah yang perlu kuambil.
-                    </p>
+        <!-- Bagian Dashboard dan Statistik -->
+        <main>
+            <section id="dashboard">
+                <div class="stat-card">
+                    <h3>Penyimpanan Drive</h3><h5>(ardysihombing2006@gmail.com)</h5>
+                    <div class="stat-main" id="storage-used">... GB</div>
+                    <div class="stat-sub" id="storage-total">dari ... GB terpakai</div>
+                    <div class="bar-container" style="margin-top: 1.5rem;">
+                        <div class="bar" id="storage-bar-inner" style="height: 12px;"></div>
+                    </div>
+                    <div class="file-stats-legend" style="margin-top: 0.5rem;">
+                        <span id="storage-available">... GB tersisa</span>
+                    </div>
                 </div>
 
-                <!-- Untuk Teman-Teman (Maaf & Terima Kasih) -->
-                <div class="mb-8 bg-indigo-50 p-6 rounded-lg">
-                    <h2 class="text-2xl font-semibold text-indigo-800 mb-4">
-                        Untuk Kalian, Teman-Teman Terbaikku
-                    </h2>
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                        Aku ingin minta maaf dari hati yang paling dalam. Maaf kalau selama ini aku ada banyak salah, entah itu kata-kata yang menyinggung, janji yang mungkin belum tertepati, atau candaan yang kelewat batas. Maaf kalau aku belum bisa jadi teman yang sempurna.
-                    </p>
-                    <p class="text-gray-700 leading-relaxed">
-                        Tapi lebih dari itu, aku mau bilang: <strong>Terima Kasih</strong>. Terima kasih untuk setiap tawa di kantin, setiap malam begadang mengerjakan tugas, setiap obrolan ngawur, dan setiap dukungan tulus yang kalian berikan. Kalian adalah salah satu alasan kenapa pengalaman kuliah ini begitu berharga.
-                    </p>
+                <div class="stat-card">
+                    <h3>Total File</h3>
+                    <div class="stat-main" id="total-files-count">...</div>
+                    <div class="stat-sub" id="total-files-size">... MB</div>
+                    
+                    <div class="file-stats-bars">
+                        <!-- Photos -->
+                        <div>
+                            <div class="file-stats-legend">
+                                <span>Foto</span>
+                                <span id="photos-info">... file, ... MB</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar" id="photos-bar"></div>
+                            </div>
+                        </div>
+                        <!-- Videos -->
+                        <div>
+                            <div class="file-stats-legend">
+                                <span>Video</span>
+                                <span id="videos-info">... file, ... MB</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar" id="videos-bar"></div>
+                            </div>
+                        </div>
+                        <!-- Music -->
+                        <div>
+                            <div class="file-stats-legend">
+                                <span>Musik</span>
+                                <span id="music-info">... file, ... MB</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar" id="music-bar"></div>
+                            </div>
+                        </div>
+                        <!-- Other Files -->
+                        <div>
+                            <div class="file-stats-legend">
+                                <span>File Lain</span>
+                                <span id="files-info">... file, ... MB</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar" id="files-bar"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Kata-Kata Semangat -->
-                <div class="mb-8">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">
-                        Tetaplah Bersemangat!
-                    </h2>
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                        Perpisahanku dari kampus bukan berarti perpisahan kita. Aku harap kalian semua tetap semangat! Selesaikan apa yang sudah kalian mulai di sini. Raih toga itu dengan bangga, buat orang tua kalian tersenyum, dan kejar semua impian kalian.
-                    </p>
-                    <p class="text-gray-700 leading-relaxed">
-                        Aku akan selalu mendoakan dan menyemangati kalian dari jalanku yang baru. Jangan ragu untuk tetap menghubungiku, ya!
-                    </p>
-                </div>
-
             </section>
 
-            <!-- Footer / Penutup -->
-            <footer class="mt-10 pt-6 border-t border-gray-200 text-center">
-                <p class="text-lg font-semibold text-gray-800">
-                    Sukses selalu untuk kita semua.
-                </p>
-                <p class="text-sm text-gray-500 mt-2">
-                    Dengan Semangat Juang</p>
-                <p class="text-md font-bold text-indigo-600 mt-1">
-                    [King Project]
-                </p>
-            </footer>
+            <!-- Bagian Upload -->
+            <section id="uploader">
+                <form id="upload-form">
+                    <label for="file-input" class="file-input-wrapper">
+                        <span>Klik untuk memilih Foto/Video/Music/File.</span>
+                        <input type="file" id="file-input" name="file-input" required>
+                    </label>
+                    <div id="file-name">Tidak ada file dipilih</div>
+                    <button type="submit" id="upload-button" disabled>Upload</button>
+                </form>
+                <div class="loader" id="upload-loader"></div>
+                <div id="upload-status"></div>
+            </section>
 
+            <!-- Navigasi Galeri -->
+            <nav id="gallery-nav">
+                <button class="nav-button active" data-filter="all">Semua</button>
+                <button class="nav-button" data-filter="image">Foto</button>
+                <button class="nav-button" data-filter="video">Video</button>
+                <button class="nav-button" data-filter="audio">Musik</button>
+                <button class="nav-button" data-filter="other">File Lain</button>
+            </nav>
+
+            <!-- Kontainer Galeri -->
+            <section id="gallery-container">
+                <div class="loader" id="gallery-loader" style="display: block;"></div>
+                <div class="gallery-grid" id="gallery-grid">
+                    <!-- Item galeri akan diisi oleh JavaScript -->
+                </div>
+            </section>
         </main>
-        
     </div>
 
+    <!-- Modal untuk Preview File -->
+    <div id="preview-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modal-title">...</h4>
+                <button class="modal-close" id="modal-close-button">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Konten preview (img, video, audio) akan diisi oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Minimalis -->
+    <footer>
+        <p>2025 | Me And You</p>
+    </footer>
+
+    <!-- JavaScript Aplikasi -->
+    <script>
+        // --- KONFIGURASI PENTING ---
+        // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwOBfPBU7xExJjUKYV72wGkeZK3fxXmY9J6lGG_nzjO32PkEbeocKi1IDwbbJUGVMw0/exec"; 
+        // -------------------------
+
+        // Elemen DOM
+        let galleryGrid, galleryNav, galleryLoader;
+        let uploadForm, fileInput, fileNameDisplay, uploadButton, uploadLoader, uploadStatus;
+        let previewModal, modalCloseButton, modalTitle, modalBody;
+
+        // State Aplikasi
+        let allFiles = []; // Cache untuk semua file dari GAS
+        let currentFilter = 'all'; // Filter galeri saat ini
+        let selectedFile = null; // File yang akan di-upload
+        let isUploading = false;
+
+        // --- ICON SVG ---
+        // Ikon untuk file musik (audio)
+        const musicIconSvg = `
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 19V12H11V19H9Z" fill="currentColor"/>
+                <path d="M13 19V12H15V19H13Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C5.58172 3 2 6.58172 2 11C2 15.4183 5.58172 19 10 19H10.5V21H13.5V19H14C18.4183 19 22 15.4183 22 11C22 6.58172 18.4183 3 14 3H10ZM4 11C4 7.68629 6.68629 5 10 5H14C17.3137 5 20 7.68629 20 11C20 14.3137 17.3137 17 14 17H10C6.68629 17 4 14.3137 4 11Z" fill="currentColor"/>
+            </svg>`;
+        
+        // Ikon untuk file generik (dokumen, zip, dll)
+        const fileIconSvg = `
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 21H4.5C3.39543 21 2.5 20.1046 2.5 19V5C2.5 3.89543 3.39543 3 4.5 3H14.5858L21.5 9.91421V19C21.5 20.1046 20.6046 21 19.5 21ZM15.5 5H4.5C4.44457 5 4.5 5.05543 4.5 5V19C4.5 19.0554 4.44457 19 4.5 19H19.5C19.5554 19 19.5 19.0554 19.5 19V10.5H14.5C14.4446 10.5 14.5 10.5554 14.5 10.5V5H15.5ZM16.5 10.5V5.70711L20.7929 10H16.5V10.5Z" fill="currentColor"/>
+            </svg>`;
+
+        // --- FUNGSI UTAMA ---
+
+        // Fungsi inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Ambil elemen DOM setelah DOM siap
+            galleryGrid = document.getElementById('gallery-grid');
+            galleryNav = document.getElementById('gallery-nav');
+            galleryLoader = document.getElementById('gallery-loader');
+            
+            uploadForm = document.getElementById('upload-form');
+            fileInput = document.getElementById('file-input');
+            fileNameDisplay = document.getElementById('file-name');
+            uploadButton = document.getElementById('upload-button');
+            uploadLoader = document.getElementById('upload-loader');
+            uploadStatus = document.getElementById('upload-status');
+            
+            previewModal = document.getElementById('preview-modal');
+            modalCloseButton = document.getElementById('modal-close-button');
+            modalTitle = document.getElementById('modal-title');
+            modalBody = document.getElementById('modal-body');
+            
+            if (GAS_WEB_APP_URL === "YOUR_GAS_WEB_APP_URL_HERE") {
+                showError("Error: SCRIPT BELUM DI KONFIGURASI");
+                galleryLoader.style.display = 'none';
+                return;
+            }
+            
+            // Muat data dashboard dan galeri
+            fetchDashboardData();
+            fetchFiles();
+
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Listener untuk navigasi filter galeri
+            galleryNav.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    // Hapus 'active' dari semua tombol
+                    galleryNav.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    // Tambah 'active' ke tombol yang diklik
+                    e.target.classList.add('active');
+                    // Set filter dan render ulang galeri
+                    currentFilter = e.target.dataset.filter;
+                    renderGallery();
+                }
+            });
+
+            // Listener untuk input file
+            fileInput.addEventListener('change', () => {
+                selectedFile = fileInput.files[0];
+                if (selectedFile) {
+                    fileNameDisplay.textContent = selectedFile.name;
+                    uploadButton.disabled = false;
+                } else {
+                    fileNameDisplay.textContent = 'Tidak ada file dipilih';
+                    uploadButton.disabled = true;
+                }
+            });
+
+            // Listener untuk form upload (AJAX)
+            uploadForm.addEventListener('submit', handleUpload);
+
+            // Listener untuk klik item galeri (buka modal)
+            galleryGrid.addEventListener('click', (e) => {
+                const galleryItem = e.target.closest('.gallery-item');
+                if (galleryItem) {
+                    const fileId = galleryItem.dataset.id;
+                    const file = allFiles.find(f => f.id === fileId);
+                    if (file) {
+                        openPreviewModal(file);
+                    }
+                }
+            });
+
+            // Listener untuk menutup modal
+            modalCloseButton.addEventListener('click', closePreviewModal);
+            previewModal.addEventListener('click', (e) => {
+                if (e.target === previewModal) {
+                    closePreviewModal();
+                }
+            });
+        }
+
+        // --- FUNGSI-FUNGSI AJAX (Fetch ke GAS) ---
+
+        /**
+         * Mengambil data statistik (penyimpanan) dari GAS
+         */
+        async function fetchDashboardData() {
+            try {
+                const response = await fetch(`${GAS_WEB_APP_URL}?action=getStorage`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                
+                if (data.error) throw new Error(data.error);
+                
+                updateDashboardStorage(data);
+
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+                showError("Gagal memuat data penyimpanan.");
+            }
+        }
+
+        /**
+         * Mengambil semua daftar file dari GAS
+         */
+        async function fetchFiles() {
+            galleryLoader.style.display = 'block';
+            galleryGrid.innerHTML = ''; // Kosongkan galeri saat loading
+            try {
+                const response = await fetch(`${GAS_WEB_APP_URL}?action=getFiles`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                allFiles = data; // Simpan di cache
+                renderGallery(); // Render galeri dengan filter saat ini
+                updateDashboardStats(allFiles); // Update statistik file
+
+            } catch (error) {
+                console.error('Error fetching files:', error);
+                showError("Gagal memuat file galeri. Coba refresh halaman.");
+            } finally {
+                galleryLoader.style.display = 'none';
+            }
+        }
+
+        /**
+         * Menangani proses upload file (kirim ke GAS via POST)
+         */
+        async function handleUpload(e) {
+            e.preventDefault();
+            if (!selectedFile || isUploading) return;
+
+            isUploading = true;
+            uploadButton.disabled = true;
+            uploadLoader.style.display = 'block';
+            uploadStatus.textContent = `Mengupload ${selectedFile.name}...`;
+
+            // Konversi file ke Base64 untuk dikirim
+            const reader = new FileReader();
+            reader.readAsDataURL(selectedFile);
+            reader.onload = async () => {
+                const base64Data = reader.result.split(',')[1];
+                const payload = {
+                    filename: selectedFile.name,
+                    mimeType: selectedFile.type || 'application/octet-stream',
+                    data: base64Data
+                };
+
+                try {
+                    const response = await fetch(GAS_WEB_APP_URL, {
+                        method: 'POST',
+                        mode: 'cors', // Penting untuk request cross-origin
+                        redirect: 'follow', // Ikuti redirect dari GAS
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8', // GAS doPost menerima text/plain
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    // GAS Web Apps seringkali merespon dengan redirect,
+                    // jadi kita perlu menangani response JSON-nya dengan benar
+                    const result = await response.json();
+
+                    if (result.success) {
+                        uploadStatus.textContent = `Upload ${result.name} berhasil!`;
+                        uploadStatus.style.color = '#34c759';
+                        
+                        // Reset form
+                        fileInput.value = null;
+                        selectedFile = null;
+                        fileNameDisplay.textContent = 'Tidak ada file dipilih';
+                        
+                        // Muat ulang galeri dan dashboard untuk data baru
+                        fetchFiles();
+                        fetchDashboardData();
+
+                    } else {
+                        throw new Error(result.error || 'Upload gagal.');
+                    }
+
+                } catch (error) {
+                    console.error('Error during upload:', error);
+                    uploadStatus.textContent = `Error: ${error.message}`;
+                    uploadStatus.style.color = '#ff3b30';
+                } finally {
+                    isUploading = false;
+                    uploadButton.disabled = true; // Tetap disable sampai file baru dipilih
+                    uploadLoader.style.display = 'none';
+                    // Hapus status setelah beberapa detik
+                    setTimeout(() => {
+                        uploadStatus.textContent = '';
+                        uploadStatus.style.color = 'var(--color-text-secondary)';
+                    }, 5000);
+                }
+            };
+
+            reader.onerror = (error) => {
+                console.error('Error reading file:', error);
+                uploadStatus.textContent = 'Error: Gagal membaca file.';
+                uploadStatus.style.color = '#ff3b30';
+                isUploading = false;
+                uploadButton.disabled = false;
+                uploadLoader.style.display = 'none';
+            };
+        }
+
+
+        // --- FUNGSI-FUNGSI RENDER (UI) ---
+
+        /**
+         * Merender item galeri ke DOM berdasarkan filter saat ini
+         */
+        function renderGallery() {
+            galleryGrid.innerHTML = ''; // Kosongkan grid
+
+            const filteredFiles = allFiles.filter(file => {
+                const fileType = getFileType(file.type);
+                if (currentFilter === 'all') return true;
+                return fileType === currentFilter;
+            });
+
+            if (filteredFiles.length === 0) {
+                galleryGrid.innerHTML = `<p style="color: var(--color-text-secondary); grid-column: 1 / -1; text-align: center;">Tidak ada file di kategori ini.</p>`;
+                return;
+            }
+
+            filteredFiles.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.dataset.id = file.id;
+
+                const fileType = getFileType(file.type);
+                let innerHtml = '';
+
+                // Gunakan webContentLink untuk thumbnail jika tersedia (lebih cepat)
+                // Jika tidak, kita gunakan ikon
+                
+                // Google Drive tidak menyediakan thumbnail URL yang mudah untuk semua file.
+                // webViewLink adalah link untuk melihat di UI Google, bukan gambar mentah.
+                // webContentLink adalah link download langsung.
+                
+                // Untuk gambar, kita bisa coba embed `webContentLink`.
+                // HATI-HATI: Ini mungkin diblokir oleh browser (CORB/CORS).
+                // Cara paling aman adalah ikon, dan preview di modal.
+                // Untuk demo ini, kita asumsikan preview di modal saja.
+
+                if (fileType === 'image') {
+                    // Karena `getThumbnail()` tidak ada di GAS, kita gunakan ikon.
+                    // Jika ingin thumbnail, butuh API Drive v3 yang lebih kompleks.
+                    innerHtml = `
+                        <div class="file-icon">
+                            ${fileIconSvg}
+                            <span>${file.name}</span>
+                        </div>
+                        <span class="file-type-overlay">Foto</span>
+                    `;
+                    // Jika Anda yakin webContentLink bisa di-embed (setelah diatur 'Anyone with link'):
+                    // innerHtml = `<img src="${file.downloadUrl}" alt="${file.name}" loading="lazy" onerror="this.parentElement.innerHTML = '${fileIconSvg}<span>${file.name}</span>';">`;
+                } else if (fileType === 'video') {
+                    innerHtml = `
+                        <div class="file-icon">
+                            ${fileIconSvg}
+                            <span>${file.name}</span>
+                        </div>
+                        <span class="file-type-overlay">Video</span>
+                    `;
+                } else if (fileType === 'audio') {
+                    innerHtml = `
+                        <div class="file-icon">
+                            ${musicIconSvg}
+                            <span>${file.name}</span>
+                        </div>
+                        <span class="file-type-overlay">Musik</span>
+                    `;
+                } else {
+                    innerHtml = `
+                        <div class="file-icon">
+                            ${fileIconSvg}
+                            <span>${file.name}</span>
+                        </div>
+                        <span class="file-type-overlay">File</span>
+                    `;
+                }
+
+                item.innerHTML = innerHtml;
+                galleryGrid.appendChild(item);
+            });
+        }
+
+        /**
+         * Membuka modal preview dengan konten file yang dipilih
+         */
+        function openPreviewModal(file) {
+            modalTitle.textContent = file.name;
+            modalBody.innerHTML = ''; // Kosongkan body
+            
+            const fileType = getFileType(file.type);
+            
+            // Kita gunakan `file.previewUrl` yang merupakan link `webViewLink`
+            // Ini akan membuka UI Google di dalam iframe.
+            // Untuk embed langsung (img, video, audio) gunakan `file.downloadUrl`
+            // Namun, `downloadUrl` (webContentLink) butuh trik untuk embed.
+            
+            // Kita ubah format `webContentLink` agar bisa di-embed
+            const embedUrl = file.downloadUrl.replace('uc?id=', 'open?id=').replace('&export=download', '');
+
+            if (fileType === 'image') {
+                modalBody.innerHTML = `<img src="${embedUrl}" alt="${file.name}">`;
+            } else if (fileType === 'video') {
+                modalBody.innerHTML = `<video controls src="${embedUrl}" style="background:black;"></video>`;
+            } else if (fileType === 'audio') {
+                modalBody.innerHTML = `<audio controls src="${embedUrl}"></audio>`;
+            } else {
+                // Untuk file lain (PDF, Teks, dll), coba embed `previewUrl`
+                // Atau tampilkan link download
+                modalBody.innerHTML = `
+                    <div class="file-preview-generic">
+                        ${fileIconSvg}
+                        <h4>Preview tidak tersedia untuk file ini.</h4>
+                        <p>${file.name}</p>
+                        <a href="${file.previewUrl}" target="_blank" rel="noopener noreferrer">Buka di Google Drive</a>
+                        <a href="${file.downloadUrl}" target="_blank" rel="noopener noreferrer" download>Download File</a>
+                    </div>
+                `;
+            }
+
+            previewModal.classList.add('show');
+        }
+
+        /**
+         * Menutup modal preview
+         */
+        function closePreviewModal() {
+            previewModal.classList.remove('show');
+            // Hentikan pemutaran video/audio saat modal ditutup
+            modalBody.innerHTML = ''; 
+        }
+
+        /**
+         * Update UI Dashboard bagian Penyimpanan
+         */
+        function updateDashboardStorage(data) {
+            const usedGB = (data.used / 1e9).toFixed(2);
+            const limitGB = (data.limit / 1e9).toFixed(2);
+            const availableGB = (data.available / 1e9).toFixed(2);
+            const percentUsed = (data.used / data.limit) * 100;
+
+            document.getElementById('storage-used').textContent = `${usedGB} GB`;
+            document.getElementById('storage-total').textContent = `dari ${limitGB} GB terpakai`;
+            document.getElementById('storage-available').textContent = `${availableGB} GB tersisa`;
+            document.getElementById('storage-bar-inner').style.width = `${percentUsed.toFixed(2)}%`;
+        }
+        
+        /**
+         * Update UI Dashboard bagian Statistik File
+         */
+        function updateDashboardStats(files) {
+            let totalSize = 0;
+            let photoCount = 0, photoSize = 0;
+            let videoCount = 0, videoSize = 0;
+            let musicCount = 0, musicSize = 0;
+            let otherCount = 0, otherSize = 0;
+
+            files.forEach(file => {
+                const sizeMB = file.size / 1e6; // Konversi ke MB
+                totalSize += sizeMB;
+                const fileType = getFileType(file.type);
+
+                if (fileType === 'image') {
+                    photoCount++;
+                    photoSize += sizeMB;
+                } else if (fileType === 'video') {
+                    videoCount++;
+                    videoSize += sizeMB;
+                } else if (fileType === 'audio') {
+                    musicCount++;
+                    musicSize += sizeMB;
+                } else {
+                    otherCount++;
+                    otherSize += sizeMB;
+                }
+            });
+
+            const totalCount = files.length;
+
+            // Update Total
+            document.getElementById('total-files-count').textContent = totalCount;
+            document.getElementById('total-files-size').textContent = `${totalSize.toFixed(2)} MB`;
+
+            // Update Info dan Bar
+            document.getElementById('photos-info').textContent = `${photoCount} file, ${photoSize.toFixed(2)} MB`;
+            document.getElementById('photos-bar').style.width = totalCount > 0 ? `${(photoCount / totalCount) * 100}%` : '0%';
+            
+            document.getElementById('videos-info').textContent = `${videoCount} file, ${videoSize.toFixed(2)} MB`;
+            document.getElementById('videos-bar').style.width = totalCount > 0 ? `${(videoCount / totalCount) * 100}%` : '0%';
+
+            document.getElementById('music-info').textContent = `${musicCount} file, ${musicSize.toFixed(2)} MB`;
+            document.getElementById('music-bar').style.width = totalCount > 0 ? `${(musicCount / totalCount) * 100}%` : '0%';
+
+            document.getElementById('files-info').textContent = `${otherCount} file, ${otherSize.toFixed(2)} MB`;
+            document.getElementById('files-bar').style.width = totalCount > 0 ? `${(otherCount / totalCount) * 100}%` : '0%';
+        }
+
+
+        // --- FUNGSI UTILITAS ---
+
+        /**
+         * Mengkategorikan file berdasarkan MIME type
+         */
+        function getFileType(mimeType) {
+            if (!mimeType) return 'other';
+            if (mimeType.startsWith('image/')) return 'image';
+            if (mimeType.startsWith('video/')) return 'video';
+            if (mimeType.startsWith('audio/')) return 'audio';
+            return 'other';
+        }
+
+        /**
+         * Menampilkan pesan error di area status upload
+         */
+        function showError(message) {
+            if (uploadStatus) {
+                uploadStatus.textContent = message;
+                uploadStatus.style.color = '#ff3b30'; // Merah
+            } else {
+                console.error("showError dipanggil sebelum uploadStatus diinisialisasi:", message);
+            }
+        }
+
+    </script>
 </body>
 </html>
+
 
