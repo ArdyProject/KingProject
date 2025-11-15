@@ -163,3 +163,8 @@ Langkah 4: Konfigurasi File index.html
  * Simpan file index.html.
 Selesai!
 Sekarang Anda bisa membuka file index.html di browser Anda (cukup klik dua kali). Website akan memuat, mengambil data dari Google Drive Anda, dan siap menerima upload file.
+
+
+
+
+live at: https://ardyproject.github.io/KingProject/
